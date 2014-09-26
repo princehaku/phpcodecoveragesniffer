@@ -1,5 +1,5 @@
 {
-    "name": "taobao-codecoveragesniffer",
+    "name": "tsearch/codecoveragesniffer",
     "description": "sniffer your code usage",
     "repositories": [
         {
