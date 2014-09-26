@@ -1,0 +1,25 @@
+{
+    "name": "taobao-codecoveragesniffer",
+    "description": "sniffer your code usage",
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "http://composer.admin.search.taobao.com"
+        },
+        {
+            "packagist": true
+        }
+    ],
+    "require": {
+    },
+    "autoload": {
+        "classmap": [ "lib" ]
+    },
+    "authors": [
+        {
+            "name": "San Bai",
+            "email": "zhongwei.bzw@taobao.com",
+            "role": "Developer"
+        }
+    ]
+}
