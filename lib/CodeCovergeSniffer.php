@@ -63,8 +63,10 @@ class CodeCovergeSniffer {
                 }
             }
         }
-        $content = var_export($old_cc, 1);
-        file_put_contents(self::$collectDir . "/$code_coverage_key.php", "<?php return $content;");
+        if (is_array($old_cc)) {
+            $content = var_export($old_cc, 1);
+            file_put_contents(self::$collectDir . "/$code_coverage_key.php", "<?php return $content;");
+        }
     }
 
     /**
