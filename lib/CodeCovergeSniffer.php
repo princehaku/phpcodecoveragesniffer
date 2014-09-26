@@ -49,7 +49,7 @@ class CodeCovergeSniffer {
         $cg = xdebug_get_code_coverage();
         xdebug_stop_code_coverage();
         if (file_exists(self::$collectDir . "/$code_coverage_key.php")) {
-            $old_cc = include self::$collectDir . "/CodeCovergeSniffer.php";
+            $old_cc = include self::$collectDir . "/$code_coverage_key.php";
         }
         foreach ($cg as $path => $lines) {
             if (!isset($old_cc[$path])) {
@@ -81,7 +81,7 @@ class CodeCovergeSniffer {
         self::copyr(__DIR__ . "/../js", self::$outPutDir);
         self::copyr(__DIR__ . "/../img", self::$outPutDir);
 
-        $old_cc = include self::$collectDir . "/CodeCovergeSniffer.php";
+        $old_cc = include self::$collectDir . "/$code_coverage_key.php";
 
         self::generateDir($htdocs_dir, $old_cc);
     }
