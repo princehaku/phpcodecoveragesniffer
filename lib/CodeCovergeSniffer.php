@@ -15,7 +15,7 @@ class CodeCovergeSniffer {
      * 收集覆盖率的文件夹
      * @var string
      */
-    public static $collectDir = "/home/admin/web/ccs/";
+    public static $collectDir = "";
 
     /**
      * 代码工程基础目录
@@ -29,11 +29,12 @@ class CodeCovergeSniffer {
      */
     public static $outPutDir = "";
 
-    public static function init($code_coverage_key) {
+    public static function init($collectDir, $code_coverage_key) {
         if (!function_exists("xdebug_start_code_coverage")) {
             error_log("CodeCovergeSniffer INIT ERROR: xdebug not install ");
             return;
         }
+        self::$collectDir = $collectDir;
         if (!file_exists(self::$collectDir)) {
             mkdir(self::$collectDir, 0777, true);
         }
