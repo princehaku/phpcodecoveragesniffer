@@ -10,9 +10,14 @@
 
 include "lib/CodeCovergeSniffer.php";
 // 创建的时候需要指定你的工程目录. 和输出路径
+$collect_dir = __DIR__ . "/../../../protected/runtime/";
 $working_dir = __DIR__ . "/../../../";
-$output_dir =  __DIR__ . "/../../../srp/cc/";
+$output_dir = __DIR__ . "/../../../srp/cc/";
 if (!file_exists($output_dir)) {
     mkdir($output_dir);
 }
-CodeCovergeSniffer::generateHtml("mido", $working_dir, $output_dir);
+$cs = new CodeCovergeSniffer();
+$cs->setCollectDir($collect_dir);
+$cs->setBaseDir($working_dir);
+$cs->setOutPutDir($output_dir);
+$cs->generateHtml("mido");

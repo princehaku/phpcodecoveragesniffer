@@ -28,7 +28,7 @@
                         $pathesp[] = $path_seg;
                         $seg_name = implode("_", $pathesp) . ".html";
 
-                        if (file_exists(CodeCovergeSniffer::$outPutDir . $seg_name)) {
+                        if (file_exists($this->outPutDir . $seg_name)) {
                             ?>
                             <li>
                                 <a href="<?php echo implode("_", $pathesp) . ".html" ?>"><?php echo $path_seg ?></a> <span

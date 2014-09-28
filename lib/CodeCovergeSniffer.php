@@ -15,42 +15,66 @@ class CodeCovergeSniffer {
      * 收集覆盖率的文件夹
      * @var string
      */
-    public static $collectDir = "";
+    protected $collectDir = "";
 
     /**
      * 代码工程基础目录
      * @var string
      */
-    public static $baseDir = "";
+    protected $baseDir = "";
 
     /**
      * 输出的html的目录
      * @var string
      */
-    public static $outPutDir = "";
+    protected $outPutDir = "";
 
-    public static function init($collectDir, $code_coverage_key) {
+    /**
+     * @param string $baseDir
+     */
+    public function setBaseDir($baseDir) {
+        $this->baseDir = realpath($baseDir) . "/";
+    }
+
+    /**
+     * @param string $collectDir
+     */
+    public function setCollectDir($collectDir) {
+        $this->collectDir = realpath($collectDir) . "/";
+    }
+
+    /**
+     * @param string $outPutDir
+     */
+    public function setOutPutDir($outPutDir) {
+        $this->outPutDir = realpath($outPutDir) . "/";
+    }
+
+    public function init($code_coverage_key) {
         if (!function_exists("xdebug_start_code_coverage")) {
             error_log("CodeCovergeSniffer INIT ERROR: xdebug not install ");
             return;
         }
-        self::$collectDir = $collectDir;
-        if (!file_exists(self::$collectDir)) {
-            mkdir(self::$collectDir, 0777, true);
+        if (empty($this->collectDir)) {
+            error_log("CodeCovergeSniffer INIT ERROR: have not set collectDir yet");
+            return;
+        }
+        if (!file_exists($this->collectDir)) {
+            mkdir($this->collectDir, 0777, true);
         }
         xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
-        register_shutdown_function(function ($k) {
-            CodeCovergeSniffer::collect($k);
-        }, $code_coverage_key);
+        register_shutdown_function(function ($obj, $k) {
+            $obj->collect($k);
+        }, $this, $code_coverage_key);
     }
 
-    public static function collect($code_coverage_key) {
+    public function collect($code_coverage_key) {
         // 捞一份旧的
         $old_cc = array();
         $cg = xdebug_get_code_coverage();
         xdebug_stop_code_coverage();
-        if (file_exists(self::$collectDir . "/$code_coverage_key.php")) {
-            $old_cc = include self::$collectDir . "/$code_coverage_key.php";
+        if (file_exists($this->collectDir . "/$code_coverage_key.php")) {
+            $old_cc = include $this->collectDir . "/$code_coverage_key.php";
         }
         foreach ($cg as $path => $lines) {
             if (!isset($old_cc[$path])) {
@@ -66,7 +90,7 @@ class CodeCovergeSniffer {
         }
         if (is_array($old_cc)) {
             $content = var_export($old_cc, 1);
-            file_put_contents(self::$collectDir . "/$code_coverage_key.php", "<?php return $content;", LOCK_EX);
+            file_put_contents($this->collectDir . "/$code_coverage_key.php", "<?php return $content;", LOCK_EX);
         }
     }
 
@@ -76,17 +100,18 @@ class CodeCovergeSniffer {
      * @param $htdocs_dir
      * @param $output_dir
      */
-    public static function generateHtml($code_coverage_key, $htdocs_dir, $output_dir) {
-        $htdocs_dir = realpath($htdocs_dir) . "/";
-        self::$baseDir = $htdocs_dir;
-        self::$outPutDir = realpath($output_dir) . "/";
-        self::copyr(realpath(__DIR__ . "/../css"), self::$outPutDir);
-        self::copyr(__DIR__ . "/../js", self::$outPutDir);
-        self::copyr(__DIR__ . "/../img", self::$outPutDir);
+    public function generateHtml($code_coverage_key) {
+        if (empty($this->collectDir) || empty($this->outPutDir) || empty($this->baseDir)) {
+            error_log("You Must specifial collectDir outPutDir baseDir");
+            return;
+        }
+        $this->copyr(realpath(__DIR__ . "/../css"), $this->outPutDir);
+        $this->copyr(__DIR__ . "/../js", $this->outPutDir);
+        $this->copyr(__DIR__ . "/../img", $this->outPutDir);
 
-        $old_cc = include self::$collectDir . "/$code_coverage_key.php";
+        $old_cc = include $this->collectDir . "/$code_coverage_key.php";
 
-        self::generateDir($htdocs_dir, $old_cc);
+        $this->generateDir($this->baseDir, $old_cc);
     }
 
     /**
@@ -94,7 +119,7 @@ class CodeCovergeSniffer {
      * @param $dir_scan
      * @param $old_cc
      */
-    private static function generateDir($dir_scan, $old_cc) {
+    private function generateDir($dir_scan, $old_cc) {
         $scaned_dirs = scandir($dir_scan);
         $scaned_res = array();
         foreach ($scaned_dirs as $dir) {
@@ -106,12 +131,12 @@ class CodeCovergeSniffer {
             echo $path . PHP_EOL;
             if (is_dir($path)) {
                 echo "DIR" . PHP_EOL;
-                self::generateDir($path, $old_cc);
+                $this->generateDir($path, $old_cc);
             } else if (is_file($path)) {
                 if (isset($old_cc[$path])) {
                     echo "IN" . PHP_EOL;
                     $scaned_res[$path] = 1;
-                    self::_generatefile($path, $old_cc);
+                    $this->_generatefile($path, $old_cc);
                 } else {
                     echo "NOTIN" . PHP_EOL;
                     $scaned_res[$path] = -1;
@@ -119,7 +144,7 @@ class CodeCovergeSniffer {
             }
         }
 
-        self::_generateDir($dir_scan, $scaned_res, $old_cc);
+        $this->_generateDir($dir_scan, $scaned_res, $old_cc);
 
     }
 
@@ -129,19 +154,19 @@ class CodeCovergeSniffer {
      * @param $scaned_res
      * @param $old_cc
      */
-    private static function _generateDir($dir_path, $scaned_res, $old_cc) {
-        $breads = explode("/", str_replace(self::$baseDir, "", $dir_path));
+    private function _generateDir($dir_path, $scaned_res, $old_cc) {
+        $breads = explode("/", str_replace($this->baseDir, "", $dir_path));
         ob_start();
         include __DIR__ . "/../tpl/dir.php";
         $html = ob_get_contents();
         ob_end_clean();
-        $dir_path = str_replace(self::$baseDir, "", $dir_path);
+        $dir_path = str_replace($this->baseDir, "", $dir_path);
         $save_path = str_replace("/", "_", trim($dir_path, "/")) . ".html";
         if ($save_path == ".html") {
             $save_path = "index.html";
         }
-        echo "SAVING DIR: " . self::$outPutDir . $save_path . PHP_EOL;
-        file_put_contents(self::$outPutDir . $save_path, $html);
+        echo "SAVING DIR: " . $this->outPutDir . $save_path . PHP_EOL;
+        file_put_contents($this->outPutDir . $save_path, $html);
     }
 
     /**
@@ -149,8 +174,8 @@ class CodeCovergeSniffer {
      * @param $file_path
      * @param $old_cc
      */
-    private static function _generatefile($file_path, $old_cc) {
-        $breads = explode("/", str_replace(self::$baseDir, "", $file_path));
+    private function _generatefile($file_path, $old_cc) {
+        $breads = explode("/", str_replace($this->baseDir, "", $file_path));
         $file_content = file_get_contents($file_path);
         $file_lines = explode(PHP_EOL, $file_content);
         $line_status = $old_cc[$file_path];
@@ -158,13 +183,13 @@ class CodeCovergeSniffer {
         include __DIR__ . "/../tpl/file.php";
         $html = ob_get_contents();
         ob_end_clean();
-        $file_path = str_replace(self::$baseDir, "", $file_path);
+        $file_path = str_replace($this->baseDir, "", $file_path);
         $save_path = str_replace("/", "_", trim($file_path, "/")) . ".html";
         if ($save_path == ".html") {
             $save_path = "index.html";
         }
-        echo "SAVING FILE: " . self::$outPutDir . $save_path . PHP_EOL;
-        file_put_contents(self::$outPutDir . $save_path, $html);
+        echo "SAVING FILE: " . $this->outPutDir . $save_path . PHP_EOL;
+        file_put_contents($this->outPutDir . $save_path, $html);
     }
 
     /**
@@ -172,7 +197,7 @@ class CodeCovergeSniffer {
      * @param $source
      * @param $dest
      */
-    static public function copyr($source, $dest) {
+    private function copyr($source, $dest) {
         // recursive function to copy
         // all subdirectories and contents:
         if (is_dir($source)) {
@@ -184,7 +209,7 @@ class CodeCovergeSniffer {
             while ($file = readdir($dir_handle)) {
                 if ($file != "." && $file != "..") {
                     if (is_dir($source . "/" . $file)) {
-                        self::copyr($source . "/" . $file, $dest . "/" . $sourcefolder);
+                        $this->copyr($source . "/" . $file, $dest . "/" . $sourcefolder);
                     } else {
                         copy($source . "/" . $file, $dest . "/" . $sourcefolder . "/" . $file);
                     }
