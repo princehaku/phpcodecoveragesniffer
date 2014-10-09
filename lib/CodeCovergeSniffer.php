@@ -24,6 +24,12 @@ class CodeCovergeSniffer {
     protected $baseDir = "";
 
     /**
+     * 代码工程文件的编码
+     * @var string
+     */
+    protected $fileEncoding = "UTF-8";
+
+    /**
      * 输出的html的目录
      * @var string
      */
@@ -32,7 +38,8 @@ class CodeCovergeSniffer {
     /**
      * @param string $baseDir
      */
-    public function setBaseDir($baseDir) {
+    public function setBaseDir($baseDir, $file_encoding = "") {
+        $this->fileEncoding = strtoupper($file_encoding);
         $this->baseDir = realpath($baseDir) . "/";
     }
 
@@ -179,6 +186,7 @@ class CodeCovergeSniffer {
         $file_content = file_get_contents($file_path);
         $file_lines = explode(PHP_EOL, $file_content);
         $line_status = $old_cc[$file_path];
+        $encoding = $this->fileEncoding;
         ob_start();
         include __DIR__ . "/../tpl/file.php";
         $html = ob_get_contents();

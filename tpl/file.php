@@ -162,7 +162,12 @@
                     <div align="right"><a name="<?php echo $file_line ?>"></a><a
                             href="#<?php echo $file_line ?>"><?php echo $file_line ?></a></div>
                 </td>
-                <td class="codeLine"><?php echo (@iconv("GBK", "utf-8//IGNORE", $line_content)) ?></td>
+                <td class="codeLine"><?php
+                    if ($encoding != "UTF-8") {
+                        $line_content = (@iconv($encoding, "utf-8//IGNORE", $line_content));
+                    }
+                    echo $line_content;
+                    ?></td>
             </tr>
         <?php
         }
