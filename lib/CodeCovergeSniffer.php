@@ -57,14 +57,19 @@ class CodeCovergeSniffer {
         $this->outPutDir = realpath($outPutDir) . "/";
     }
 
+    /**
+     * 使用一个key进行初始化
+     * @param $code_coverage_key
+     * @return bool
+     */
     public function init($code_coverage_key) {
         if (!function_exists("xdebug_start_code_coverage")) {
             error_log("CodeCovergeSniffer INIT ERROR: xdebug not install ");
-            return;
+            return false;
         }
         if (empty($this->collectDir)) {
             error_log("CodeCovergeSniffer INIT ERROR: have not set collectDir yet");
-            return;
+            return false;
         }
         if (!file_exists($this->collectDir)) {
             mkdir($this->collectDir, 0777, true);
@@ -73,6 +78,7 @@ class CodeCovergeSniffer {
         register_shutdown_function(function ($obj, $k) {
             $obj->collect($k);
         }, $this, $code_coverage_key);
+        return true;
     }
 
     public function collect($code_coverage_key) {
