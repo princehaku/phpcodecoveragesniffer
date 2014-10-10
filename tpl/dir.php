@@ -19,8 +19,13 @@
         <div class="row">
             <div class="span12">
                 <ul class="breadcrumb">
+                    <li>
+                        <a href="<?php echo isset($breads[0]) ? "#" : $breads[0] . "/../index.html"; ?>">Home</a> <span
+                            class="divider">/</span>
+                    </li>
                     <?php
                     $pathesp = array();
+
                     foreach ($breads as $path_seg) {
                         if (empty($path_seg)) {
                             continue;
@@ -120,23 +125,25 @@
             if (empty($pathesp)) {
                 $file_path = $name . ".html";
             }
-            if ($name == ".") {
-                $file_path = implode("_", $pathesp) . ".html";
+            // 几种特殊类型的拼接
+            switch ($name) {
+                case  ".":
+                    $file_path = implode("_", $pathesp) == "" ? 'index.html' : implode("_", $pathesp) . ".html";
+                    break;
+                case  "..":
+                    $newpath = $pathesp;
+                    unset($newpath[count($newpath) - 1]);
+                    $file_path = implode("_", $newpath) == "" ? 'index.html' : implode("_", $newpath) . ".html";
+                    break;
             }
-            if ($name == "..") {
-                $newpath = $pathesp;
-                unset($newpath[count($newpath) - 1]);
-                $file_path = implode("_", $newpath) . ".html";
-            }
-            if ($file_path == ".html") {
-                $file_path = "index.html";
-            }
+
+            $file_exists = !isset($old_cc[realpath($this->outPutDir . $file_path)]);
             ?>
             <tr>
                 <td class="<?php echo $class ?>">
                     <?php if ($class == "") { ?>
                         <i class="icon-folder-open"></i>
-                        <?php if (!empty($pathesp) && !file_exists($this->outPutDir . $file_path)) {
+                        <?php if (!empty($pathesp) && !$file_exists) {
                             ?>
                             <?php echo $name ?>
                         <?php

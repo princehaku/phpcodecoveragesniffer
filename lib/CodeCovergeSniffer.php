@@ -3,7 +3,7 @@
 /**
  * Copyright 2014
  *  FileName   : CodeCovergeSniffer.php
- *  Created on : 14-9-26 , ÏÂÎç3:10
+ *  Created on : 14-9-26 , ä¸‹åˆ3:10
  *  Author     : haku-mac
  *  Account    : zhongwei.bzw
  *  Blog       : http://3haku.net
@@ -12,31 +12,32 @@
 class CodeCovergeSniffer {
 
     /**
-     * ÊÕ¼¯¸²¸ÇÂÊµÄÎÄ¼ş¼Ğ
+     * æ”¶é›†è¦†ç›–ç‡çš„æ–‡ä»¶å¤¹
      * @var string
      */
     protected $collectDir = "";
 
     /**
-     * ´úÂë¹¤³Ì»ù´¡Ä¿Â¼
+     * ä»£ç å·¥ç¨‹åŸºç¡€ç›®å½•
      * @var string
      */
     protected $baseDir = "";
 
     /**
-     * ´úÂë¹¤³ÌÎÄ¼şµÄ±àÂë
+     * ä»£ç å·¥ç¨‹æ–‡ä»¶çš„ç¼–ç 
      * @var string
      */
     protected $fileEncoding = "UTF-8";
 
     /**
-     * Êä³öµÄhtmlµÄÄ¿Â¼
+     * è¾“å‡ºçš„htmlçš„ç›®å½•
      * @var string
      */
     protected $outPutDir = "";
 
     /**
-     * @param string $baseDir
+     * @param string $baseDir å·¥ç¨‹æ–‡ä»¶çš„åŸºç¡€ç›®å½•
+     * @param string $file_encoding å·¥ç¨‹æ–‡ä»¶çš„ç¼–ç  é»˜è®¤UTF-8
      */
     public function setBaseDir($baseDir, $file_encoding = "") {
         $this->fileEncoding = strtoupper($file_encoding);
@@ -44,6 +45,7 @@ class CodeCovergeSniffer {
     }
 
     /**
+     * æ”¶é›†çš„infoå­˜æ”¾çš„ç›®å½•
      * @param string $collectDir
      */
     public function setCollectDir($collectDir) {
@@ -51,6 +53,7 @@ class CodeCovergeSniffer {
     }
 
     /**
+     * æ–‡ä»¶è¾“å‡ºçš„ç›®å½•
      * @param string $outPutDir
      */
     public function setOutPutDir($outPutDir) {
@@ -82,7 +85,7 @@ class CodeCovergeSniffer {
     }
 
     public function collect($code_coverage_key) {
-        // ÀÌÒ»·İ¾ÉµÄ
+        // æä¸€ä»½æ—§çš„
         $old_cc = array();
         $cg = xdebug_get_code_coverage();
         xdebug_stop_code_coverage();
@@ -108,10 +111,8 @@ class CodeCovergeSniffer {
     }
 
     /**
-     * ´´½¨html
+     * åˆ›å»ºhtmlä»¬
      * @param $code_coverage_key
-     * @param $htdocs_dir
-     * @param $output_dir
      */
     public function generateHtml($code_coverage_key) {
         if (empty($this->collectDir) || empty($this->outPutDir) || empty($this->baseDir)) {
@@ -123,12 +124,16 @@ class CodeCovergeSniffer {
         $this->copyr(__DIR__ . "/../img", $this->outPutDir);
 
         $old_cc = include $this->collectDir . "/$code_coverage_key.php";
-
+        // å¯¹keyåšä¸€æ¬¡å¤„ç†ï¼Œå¤„ç†å‡ºç›®å½•çš„ä¿¡æ¯
+        foreach($old_cc as $path=>$v) {
+            $dir_path = dirname($path);
+            $old_cc[$dir_path] = array();
+        }
         $this->generateDir($this->baseDir, $old_cc);
     }
 
     /**
-     * ±éÀúÄ¿Â¼»ñÈ¡Ä¿Â¼ĞÅÏ¢
+     * éå†ç›®å½•è·å–ç›®å½•ä¿¡æ¯
      * @param $dir_scan
      * @param $old_cc
      */
@@ -162,7 +167,7 @@ class CodeCovergeSniffer {
     }
 
     /**
-     * Éú³ÉÄ¿Â¼ĞÅÏ¢
+     * ç”Ÿæˆç›®å½•ä¿¡æ¯
      * @param $dir_path
      * @param $scaned_res
      * @param $old_cc
@@ -183,7 +188,7 @@ class CodeCovergeSniffer {
     }
 
     /**
-     * Éú³Éµ¥ÎÄ¼şĞÅÏ¢
+     * ç”Ÿæˆå•æ–‡ä»¶ä¿¡æ¯
      * @param $file_path
      * @param $old_cc
      */
@@ -207,7 +212,7 @@ class CodeCovergeSniffer {
     }
 
     /**
-     * ÓÃÓÚÅúÁ¿¸´ÖÆÎÄ¼ş¹ıÈ¥
+     * ç”¨äºæ‰¹é‡å¤åˆ¶æ–‡ä»¶è¿‡å»ï¼Œä¸»è¦æ˜¯csså’Œjsï¼Œæ–¹ä¾¿æŸ¥çœ‹
      * @param $source
      * @param $dest
      */

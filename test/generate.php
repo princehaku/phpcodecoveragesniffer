@@ -2,14 +2,14 @@
 /**
  * Copyright 2014
  *  FileName   : generate.php
- *  Created on : 14-9-26 , ÏÂÎç3:09
+ *  Created on : 14-9-26 , ä¸‹åˆ3:09
  *  Author     : haku-mac
  *  Account    : zhongwei.bzw
  *  Blog       : http://3haku.net
  */
 
 include "lib/CodeCovergeSniffer.php";
-// ´´½¨µÄÊ±ºòĞèÒªÖ¸¶¨ÄãµÄ¹¤³ÌÄ¿Â¼. ºÍÊä³öÂ·¾¶
+// åˆ›å»ºçš„æ—¶å€™éœ€è¦æŒ‡å®šä½ çš„å·¥ç¨‹ç›®å½•. å’Œè¾“å‡ºè·¯å¾„
 $collect_dir = __DIR__ . "/../../../protected/runtime/";
 $working_dir = __DIR__ . "/../../../";
 $output_dir = __DIR__ . "/../../../srp/cc/";
