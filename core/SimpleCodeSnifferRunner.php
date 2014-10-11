@@ -14,7 +14,7 @@
  */
 class SimpleCodeSnifferRunner {
 
-    public static function init($default_key = "ccs", $src_dir = "", $output_base_dir = "") {
+    public static function init($default_key = "ccs", $src_dir = "", $output_base_dir = "", $src_encoding = "UTF-8") {
         // 代码覆盖统计，需xdebug支持 -- zhongwei.bzw
         if (!isset($_GET['code_collect'])) {
             return false;
@@ -41,7 +41,7 @@ class SimpleCodeSnifferRunner {
             if (!file_exists($output_base_dir)) {
                 mkdir($output_base_dir, 0777, 1);
             }
-            $cs->setBaseDir($src_dir);
+            $cs->setBaseDir($src_dir, $src_encoding);
             $cs->setOutPutDir($output_base_dir);
             $cs->generateHtml("$code_coverage_key", true);
             $path = "/ccs/$code_coverage_key/index.html";
