@@ -1,11 +1,7 @@
 {
-    "name": "tsearch/codecoveragesniffer",
-    "description": "sniffer your code usage",
+    "name": "phpcodecoveragesniffer",
+    "description": "get your code coverage",
     "repositories": [
-        {
-            "type": "composer",
-            "url": "http://composer.admin.search.taobao.com"
-        },
         {
             "packagist": true
         }
@@ -13,12 +9,12 @@
     "require": {
     },
     "autoload": {
-        "classmap": [ "lib" ]
+        "classmap": [ "lib" , "core"]
     },
     "authors": [
         {
             "name": "San Bai",
-            "email": "zhongwei.bzw@taobao.com",
+            "email": "baizhongwei@163.com",
             "role": "Developer"
         }
     ]

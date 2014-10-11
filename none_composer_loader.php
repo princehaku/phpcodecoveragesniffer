@@ -8,4 +8,5 @@
  *  Blog       : http://3haku.net
  */
 
+include __DIR__ . "/core/SimpleCodeSnifferRunner.php";
 include __DIR__ . "/lib/CodeCovergeSniffer.php";

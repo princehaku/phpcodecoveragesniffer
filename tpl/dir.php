@@ -20,7 +20,7 @@
             <div class="span12">
                 <ul class="breadcrumb">
                     <li>
-                        <a href="<?php echo isset($breads[0]) ? "#" : $breads[0] . "/../index.html"; ?>">Home</a> <span
+                        <a href="<?php echo empty($breads[0]) ? "#" : $breads[0] . "/../index.html"; ?>">Home</a> <span
                             class="divider">/</span>
                     </li>
                     <?php
@@ -33,7 +33,7 @@
                         $pathesp[] = $path_seg;
                         $seg_name = implode("_", $pathesp) . ".html";
 
-                        if (file_exists($this->outPutDir . $seg_name)) {
+                        if (isset($codeinfos[$this->outPutDir . $seg_name])) {
                             ?>
                             <li>
                                 <a href="<?php echo implode("_", $pathesp) . ".html" ?>"><?php echo $path_seg ?></a> <span
@@ -101,8 +101,8 @@
             if ($status == 1) {
                 $class = "success";
                 // 统计行数
-                $total_line = count($old_cc[$path]);
-                foreach ($old_cc[$path] as $k) {
+                $total_line = count($codeinfos[$path]);
+                foreach ($codeinfos[$path] as $k) {
                     if ($k == 1) {
                         $using_line++;
                     }
@@ -125,25 +125,27 @@
             if (empty($pathesp)) {
                 $file_path = $name . ".html";
             }
+            $file_exists = file_exists(realpath($this->outPutDir . $file_path));
             // 几种特殊类型的拼接
             switch ($name) {
                 case  ".":
                     $file_path = implode("_", $pathesp) == "" ? 'index.html' : implode("_", $pathesp) . ".html";
+                    $file_exists = true;
                     break;
                 case  "..":
                     $newpath = $pathesp;
                     unset($newpath[count($newpath) - 1]);
                     $file_path = implode("_", $newpath) == "" ? 'index.html' : implode("_", $newpath) . ".html";
+                    $file_exists = true;
                     break;
             }
 
-            $file_exists = !isset($old_cc[realpath($this->outPutDir . $file_path)]);
             ?>
             <tr>
                 <td class="<?php echo $class ?>">
                     <?php if ($class == "") { ?>
                         <i class="icon-folder-open"></i>
-                        <?php if (!empty($pathesp) && !$file_exists) {
+                        <?php if (!$file_exists) {
                             ?>
                             <?php echo $name ?>
                         <?php
