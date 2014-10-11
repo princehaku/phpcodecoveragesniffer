@@ -1,5 +1,5 @@
 {
-    "name": "phpcodecoveragesniffer",
+    "name": "tsearch/phpcodecoveragesniffer",
     "description": "get your code coverage",
     "repositories": [
         {
