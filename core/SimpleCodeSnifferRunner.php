@@ -14,7 +14,7 @@
  */
 class SimpleCodeSnifferRunner {
 
-    public static function init($default_key = "ccs") {
+    public static function init($default_key = "ccs", $src_dir = "", $output_base_dir = "") {
         // 代码覆盖统计，需xdebug支持 -- zhongwei.bzw
         if (!isset($_GET['code_collect'])) {
             return false;
@@ -29,15 +29,20 @@ class SimpleCodeSnifferRunner {
         }
         $cs = new CodeCovergeSniffer();
         // 创建的时候需要指定你的工程目录. 和输出路径
-        $working_dir = $_SERVER['DOCUMENT_ROOT'] . "/";
-        $output_dir = $working_dir . "/ccs/$code_coverage_key/";
+        if (empty($src_dir)) {
+            $src_dir = $_SERVER['DOCUMENT_ROOT'] . "/";
+        }
+        if (empty($output_base_dir)) {
+            $output_base_dir = $_SERVER['DOCUMENT_ROOT'];
+        }
+        $output_base_dir = $output_base_dir . "/ccs/$code_coverage_key/";
         // 如果是输出文件模式
         if (isset($_GET['code_generate'])) {
-            if (!file_exists($output_dir)) {
-                mkdir($output_dir, 0777, 1);
+            if (!file_exists($output_base_dir)) {
+                mkdir($output_base_dir, 0777, 1);
             }
-            $cs->setBaseDir($working_dir);
-            $cs->setOutPutDir($output_dir);
+            $cs->setBaseDir($src_dir);
+            $cs->setOutPutDir($output_base_dir);
             $cs->generateHtml("$code_coverage_key", true);
             $path = "/ccs/$code_coverage_key/index.html";
             echo "<script>window.document.location = '$path';</script>";
