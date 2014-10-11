@@ -38,7 +38,7 @@ class SimpleCodeSnifferRunner {
             }
             $cs->setBaseDir($working_dir);
             $cs->setOutPutDir($output_dir);
-            $cs->generateHtml("$code_coverage_key");
+            $cs->generateHtml("$code_coverage_key", true);
             $path = "/ccs/$code_coverage_key/index.html";
             echo "<script>window.document.location = '$path';</script>";
             die;
@@ -46,7 +46,9 @@ class SimpleCodeSnifferRunner {
         // 初始化收集器
         if ($cs->init($code_coverage_key)) {
             register_shutdown_function(function ($code_coverage_key) {
-                echo "<a target='_blank' href='?code_collect=true&code_generate=true&code_key=${code_coverage_key}'>show code coverage graph</a>";
+                echo "<div style='position: fixed;bottom: 3px; right:3px ;padding:3px;width: 200px;background: #cccccc;z-index:9999999;'>" .
+                    "<a target='_blank' href='?code_collect=true&code_generate=true&code_key=${code_coverage_key}'>show code coverage graph</a>" .
+                    "</div>";
             }, $code_coverage_key);
         }
     }
