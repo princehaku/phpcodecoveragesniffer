@@ -14,7 +14,8 @@
 
 最简使用方式如下，以常用的wordpress为例:
 
-![image](http://3haku.net/wp-content/uploads/2014/10/QQ20141015-2@2x.png =600x)
+
+![image](http://3haku.net/wp-content/uploads/2014/10/QQ20141015-2@2x.png)
 
 在代码开始的入口位置加上
 
@@ -49,7 +50,7 @@ SimpleCodeSnifferRunner::init("ccs");
 
 http://wp.loc.techest.net/?code_collect=true
 
-![image](http://3haku.net/wp-content/uploads/2014/10/QQ20141015-1@2x.png =600x)
+![image](http://3haku.net/wp-content/uploads/2014/10/QQ20141015-1@2x.png)
 
 然后页面右下角能看到一个**show code coverage graph**
 
@@ -57,9 +58,9 @@ http://wp.loc.techest.net/?code_collect=true
 
 如下图：
 
-![image](http://3haku.net/wp-content/uploads/2014/10/QQ20141015-3@2x.png =600x)
+![image](http://3haku.net/wp-content/uploads/2014/10/QQ20141015-3@2x.png)
 
-![image](http://3haku.net/wp-content/uploads/2014/10/QQ20141015-4@2x.png =600x)
+![image](http://3haku.net/wp-content/uploads/2014/10/QQ20141015-4@2x.png)
 
 
 附表:
