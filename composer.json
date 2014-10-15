@@ -1,6 +1,6 @@
 {
-    "name": "tsearch/phpcodecoveragesniffer",
-    "description": "get your code coverage",
+    "name": "princehaku/phpcodecoveragesniffer",
+    "description": "visual show your code coverage",
     "repositories": [
         {
             "packagist": true
